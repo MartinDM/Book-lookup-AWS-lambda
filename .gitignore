@@ -42,3 +42,4 @@ yarn-error.log*
 next-env.d.ts
 app/node_modules
 app/.next
+app/.next/*

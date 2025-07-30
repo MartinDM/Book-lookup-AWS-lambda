@@ -1,57 +1,185 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import {  Field, Input, Text } from "@chakra-ui/react";
-import { type Author, type AuthorsApiResponse } from "./types";
+'use client';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import {
+  Field,
+  Input,
+  Text,
+  Heading,
+  Container,
+  InputGroup,
+  Box,
+  Link as ChakraLink,
+} from '@chakra-ui/react';
+import NextLink from 'next/link';
 
-export default function Home() { 
-  const [searchTerm, setSearchTerm ] = useState<string>("");
+import { LuSearch } from 'react-icons/lu';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
-  async function fetchAuthors(searchTerm: string): Promise<AuthorsApiResponse> {
-    console.log('submitted');
-    const res = await fetch(`/api/author?author=${encodeURIComponent(searchTerm)}`);
-    const data = await res.json();
-    console.log(data);
-    setAuthors(data.docs || []);
+import { type GoogleBooksResponse } from './types';
+import { MdOutlineChromeReaderMode } from 'react-icons/md';
+import Link from 'next/link';
+import Image from 'next/image';
+import useLocalStorage from './hooks/useLocalStorage';
+
+
+const transformResponseIntoBooks = (
+  data: GoogleBooksResponse
+): GoogleBooksResponseItem[] => {
+  return data.items.map((item) => {
+    console.log(item);
+    const { volumeInfo, id, accessInfo } = item;
+    return { 
+      id,
+      infoLink: volumeInfo.infoLink || '',
+      authors: volumeInfo.authorsList.join(', ') || [], 
+      publishedDate: volumeInfo.publishedDate,
+      imageLinks: volumeInfo.imageLinks,
+      title: volumeInfo.title,
+      webReaderLink: accessInfo?.webReaderLink || '', 
+    };
+  });
+}
+
+
+export default function Home() {
+  const [searchTerm, setSearchTerm] = useLocalStorage<string>('searchTerm', '');
+  const [books, setBooks] = useLocalStorage<GoogleBooksResponseItem[]>('books', []);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const maxChars = 100;
+  async function fetchAuthors(
+    searchTerm: string,
+    startIndex: number = 0
+  ): Promise<GoogleBooksResponse> {
+    const res = await fetch(
+      `/api/search?author=${encodeURIComponent(
+        searchTerm
+      )}&startIndex=${startIndex}`
+    );
+    const data: GoogleBooksResponse = await res.json();
+    const booksData = transformResponseIntoBooks(data);
+    setBooks((prev) =>  [...prev, ...(booksData || [])]);
+    console.log('Fetched books:', booksData);
     return data;
   }
 
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetchAuthors(searchTerm); 
+    if (!searchTerm.trim()) return;
+    setBooks([]);
+    setIsLoading(true);  
+    try {
+      await fetchAuthors(searchTerm);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const [authors, setAuthors] = useState<Author[]>([]) 
+  const handleNextPage = async () => {
+    setIsLoading(true);
+    try {
+      const nextIndex = books.length;
+      await fetchAuthors(searchTerm, nextIndex);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <main className="grid grid-cols-2 gap-4 flex justify-center items-center min-h-screen p-2">
-           <form onSubmit={handleSubmit} className="content-center flex flex-col gap-4">
-            <Field.Root>
-              <Field.Label>
-                <Text fontWeight="normal" textStyle="md" className='font-cyan-500 text-black bg-white text-center p-6'>
-                  Search for an Author
-                </Text>
-              </Field.Label>
-              <Input
-                name="name"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </Field.Root>
-            <Button type='submit' size="xs">Search</Button>
-          </form> 
-        <div className="border-l-2 border-cyan-500 pl-8">
-          <h2 className="font-bold text-cyan-500">Authors</h2>
-          {
-            authors.map((author) => (
-              <div key={author.key} className="mb-4">
-                <h3 className="text-lg font-semibold">{author.name}</h3>
-                {author.birth_date && <p>Born: {author.birth_date}</p>}
-                {author.top_work && <p>Top Work: {author.top_work}</p>}
-                {author.work_count && <p>Works: {author.work_count}</p>}
-              </div>
-            ))
-          }
-        </div> 
-    </main>
+    <Container maxW={'xl'}>
+      <form onSubmit={handleSubmit} className="search">
+        <Field.Root>
+          <Field.Label>
+            <Heading as={'h2'} size={'3xl'}>
+              Search for an Author
+            </Heading>
+          </Field.Label>
+          <InputGroup flex="1" startElement={<LuSearch />}>
+            <Input
+              placeholder="Search authors"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </InputGroup>
+          <Button disabled={!searchTerm.trim().length} type="submit" size="xs">
+            Search
+          </Button>
+        </Field.Root>
+      </form>
+      <div className="results">
+        {books.length > 0 && (
+          <Heading as="h2" size={'xl'}>
+            Results
+          </Heading>
+        )}
+        {books.map((book: GoogleBooksResponseItem) => {
+          console.log(book);
+          const { id, publishedDate, volumeInfo, accessInfo } = book;
+          const { imageLinks, infoLink, title, authors } =  volumeInfo;
+          const { webReaderLink, infoLink } = book.accessInfo;
+           return (
+            <Box key={id} className="result">
+              <Box className="book-info">
+                <div>
+                  <Heading size="md" as={'h4'}>
+                    <Link href={infoLink} title={title}>
+                      {title?.slice(0, maxChars) + (title?.length > maxChars ? "..." : "")}
+                    </Link>
+                  </Heading>
+                  <Text textStyle="sm">
+                    {publishedDate &&
+                      new Date(publishedDate).getFullYear() + ' | '}
+                    {authors}
+                  </Text>
+                  <Box className="book-actions">
+                    <Link
+                      title="Read preview online"
+                      href={webReaderLink}
+                      target="_blank"
+                    >
+                      <MdOutlineChromeReaderMode size={24} />
+                    </Link>
+                  </Box>
+                </div>
+                {imageLinks && (
+                  <Link
+                    href={webReaderLink}
+                    title={title}
+                    className="thumbnail-container"
+                  >
+                    <Image
+                      src={imageLinks.thumbnail}
+                      alt={title}
+                      width={128}
+                      height={192}
+                      className="thumbnail"
+                    />
+                  </Link>
+                )}
+              </Box>
+            </Box>
+          );
+        })}
+        {books.length > 0 && (
+          <Box className="details">
+            <Text textStyle="md" className="load-more-text">
+              Showing {books.length} results for <strong>&apos;{searchTerm}&apos;</strong>
+            </Text>
+
+            <ChakraLink
+              asChild
+              href="#"
+              onClick={handleNextPage}
+              className="load-more"
+            >
+              <NextLink href="#"> Load more</NextLink>
+            </ChakraLink>
+          </Box>
+        )}
+      </div>
+      {isLoading && <AiOutlineLoading3Quarters className={'loader'} />}
+    </Container>
   );
 }

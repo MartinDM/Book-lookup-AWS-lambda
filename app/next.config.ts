@@ -1,7 +1,12 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    optimizePackageImports: ['@chakra-ui/react'],
+  },
+  images: {
+    remotePatterns: [{ protocol: 'http', hostname: 'books.google.com' }],
+  },
 };
 
 export default nextConfig;

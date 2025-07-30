@@ -9,7 +9,7 @@
   "static/chunks/node_modules_@floating-ui_7349b730._.js",
   "static/chunks/node_modules_2feb1b24._.js",
   "static/chunks/src_components_ui_5f867e8e._.js",
-  "static/chunks/[root-of-the-server]__8ebb6d4b._.css"
+  "static/chunks/[next]_internal_font_google_55dcbe76._.css"
 ],
     source: "dynamic"
 });

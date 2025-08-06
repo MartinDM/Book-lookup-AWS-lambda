@@ -16,7 +16,7 @@ This project deploys a serverless REST API using:
 
 ```
 martin-rest-api/
-├── handler.py          # Lambda function code
+├── index.py           # Lambda function code
 ├── main.tf            # Terraform infrastructure configuration
 ├── variables.tf       # Terraform input variables
 ├── outputs.tf         # Terraform output values
@@ -33,33 +33,22 @@ martin-rest-api/
 
 ### Deployment Steps
 
-1. **Clone and navigate to the project:**
-
-   ```bash
-   cd martin-rest-api
-   ```
-
-2. **Initialize Terraform:**
+1. **Initialise**
 
    ```bash
    terraform init
    ```
 
-3. **Review the deployment plan:**
+2. **Review the deployment plan:**
 
    ```bash
    terraform plan
    ```
 
-4. **Deploy the infrastructure:**
+3. **Deploy the infrastructure:**
 
    ```bash
    terraform apply
-   ```
-
-5. **Get your API URL:**
-   ```bash
-   terraform output api_gateway_url
    ```
 
 ## 🔧 Configuration

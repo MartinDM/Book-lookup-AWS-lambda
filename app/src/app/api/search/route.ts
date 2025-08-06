@@ -6,14 +6,14 @@ export async function GET(request: Request) {
   const author = searchParams.get('author') || '';
   const startIndex = searchParams.get('startIndex') || '0';
   const apiUrl = `https://37ey6hgnp4.execute-api.eu-west-2.amazonaws.com?startIndex=${startIndex}&author=${encodeURIComponent(
-    author
+    author,
   )}`;
   try {
     const res = await fetch(apiUrl);
     if (!res.ok) {
       return NextResponse.json(
         { error: 'Failed to fetch external API' },
-        { status: res.status }
+        { status: res.status },
       );
     }
     const data = await res.json();
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: 'Error calling external API' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

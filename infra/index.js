@@ -2,11 +2,12 @@ const https = require('https');
 
 exports.handler = async (event) => {
   const { author = '', startIndex = 0 } = event.queryStringParameters || {};
+  const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
   const url = `https://www.googleapis.com/books/v1/volumes?q=inauthor:${encodeURIComponent(
     author
   )}&printType=books&startIndex=${encodeURIComponent(
     startIndex
-  )}&maxResults=10&key=AIzaSyAh0XUqjR8dy2l2DW5YhnoQXTgaQnPDZXc`;
+  )}&maxResults=10&key=${apiKey}`;
 
   return new Promise((resolve, reject) => {
     https

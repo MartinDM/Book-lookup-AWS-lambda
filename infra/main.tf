@@ -62,12 +62,13 @@ resource "aws_sns_topic_subscription" "email" {
 }
 
 resource "aws_lambda_function" "my-rest-api-function" {
-  function_name = "auth-lookup"
-  s3_bucket     = "martindm-86"
-  s3_key        = "function.zip" # update if your zip is in a subfolder
-  handler       = "index.handler"
-  runtime       = "nodejs18.x"
-  role          = aws_iam_role.lambda_exec_role.arn
+  function_name    = "auth-lookup"
+  s3_bucket        = "martindm-86"
+  s3_key           = "function.zip" # update if your zip is in a subfolder
+  handler          = "index.handler"
+  runtime          = "nodejs18.x"
+  role             = aws_iam_role.lambda_exec_role.arn
+  source_code_hash = filebase64sha256("function.zip")
 }
 
 resource "aws_apigatewayv2_api" "http_api" {

@@ -8,7 +8,6 @@ exports.handler = async (event) => {
   )}&printType=books&startIndex=${encodeURIComponent(
     startIndex
   )}&maxResults=10&key=${apiKey}`;
-
   return new Promise((resolve, reject) => {
     https
       .get(url, (res) => {

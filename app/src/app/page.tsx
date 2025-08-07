@@ -109,6 +109,7 @@ export default function Home() {
   const handleClearResults = (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
     setBooks([]);
+    setHasSearched(false);
     setSearchTerm('');
   };
 

@@ -2,6 +2,10 @@
 
 A lightweight 🔍 **author lookup tool** built with **Next.js**, using the **Google Books API** to list 📖 books by author, with direct links to read them online via `webReaderLink`.
 
+<a href="https://author-lambda-lookup.vercel.app/">
+<img width="605" height="497" alt="image" src="https://github.com/user-attachments/assets/d3dcaf53-d8e8-4ecb-b53e-65b3cde2e91f" />
+</a>
+
 This app connects to the Google Books API through an **AWS Lambda** function (invoked by the frontend), and is **deployed using Terraform** (in the `infra/` directory).
 
 🔒 It also uses **`localStorage`** to persist your most recent search results between visits.

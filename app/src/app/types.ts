@@ -1,12 +1,12 @@
 export type GoogleBooksResponseItem = {
   id: string;
+  selfLink: string;
   kind: string;
   etag: string;
-  selfLink: string;
   volumeInfo: {
     title: string;
     subtitle?: string;
-    authors?: string[];
+    authorsList?: string[];
     publisher?: string;
     publishedDate?: string;
     description?: string;
@@ -53,6 +53,16 @@ export type GoogleBooksResponseItem = {
   searchInfo?: {
     textSnippet: string;
   };
+};
+
+export type BookItem = {
+  id: string;
+  infoLink: string;
+  authors: string;
+  publishedDate?: string;
+  imageLinks?: { smallThumbnail: string; thumbnail: string };
+  title: string;
+  webReaderLink: string;
 };
 
 export type GoogleBooksResponse = {

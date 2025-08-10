@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Provider } from '@/components/ui/provider';
-
 import './globals.scss';
 
 export const metadata: Metadata = {
@@ -17,6 +16,10 @@ export default function RootLayout({
     <html suppressHydrationWarning>
       <body>
         <Provider>{children}</Provider>
+        <footer>
+          Made with 🩶 by <a href="http://martindm.uk">Martin</a> |{' '}
+          {new Date().getFullYear()}
+        </footer>
       </body>
     </html>
   );

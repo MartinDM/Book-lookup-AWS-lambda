@@ -24,6 +24,19 @@ body {
   padding-top: 50px;
 }
 
+footer {
+  width: 100%;
+  padding: 2em 0;
+  font-size: 13px;
+  color: white;
+  text-align: center;
+  bottom: 0;
+  color: #9cadb1;
+  a {
+    text-decoration: underline;
+  }
+}
+
 .search {
   width: 70%;
   h2 {

@@ -1,9 +1,9 @@
 'use client';
-import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import {
   Field,
   Input,
+  Button,
   Text,
   Heading,
   Container,
@@ -16,18 +16,13 @@ import { HiX } from 'react-icons/hi';
 import { LuSearch } from 'react-icons/lu';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
-import {
-  type GoogleBooksResponse,
-  type GoogleBooksResponseItem,
-} from './types';
+import { type GoogleBooksResponse, type BookItem } from './types';
 import { MdOutlineChromeReaderMode } from 'react-icons/md';
 import Link from 'next/link';
 import Image from 'next/image';
 import useLocalStorage from './hooks/useLocalStorage';
 
-const transformResponseIntoBooks = (
-  data: GoogleBooksResponse,
-): GoogleBooksResponseItem[] => {
+const transformResponseIntoBooks = (data: GoogleBooksResponse): BookItem[] => {
   if (!data.items) return [];
   return data.items.map((item) => {
     const { volumeInfo, id, accessInfo } = item;
@@ -45,19 +40,18 @@ const transformResponseIntoBooks = (
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [books, setBooks] = useLocalStorage<GoogleBooksResponseItem[]>('books', []);
+  const [books, setBooks] = useLocalStorage<BookItem[]>('books', []);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasMounted, setHasMounted] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  
+
   useEffect(() => {
     setHasMounted(true);
     // Fetch searchTerm from localStorage after mount
     const stored = window?.localStorage.getItem('searchTerm');
     if (stored) setSearchTerm(JSON.parse(stored));
   }, []);
-  
-  
+
   useEffect(() => {
     window.localStorage.setItem('searchTerm', JSON.stringify(searchTerm));
   }, [searchTerm]);
@@ -78,7 +72,7 @@ export default function Home() {
       setBooks(booksData || []);
     } else {
       setBooks((prev) => [...prev, ...(booksData || [])]);
-    } 
+    }
     return data;
   }
 
@@ -119,7 +113,6 @@ export default function Home() {
       size="xs"
       onClick={() => {
         setSearchTerm('');
-        inputRef.current?.focus();
       }}
       me="-2"
     >
@@ -165,7 +158,7 @@ export default function Home() {
             <Em>&apos;{searchTerm}&apos;</Em>
           </Text>
         )}
-        {books.map((book: GoogleBooksResponseItem) => {
+        {books.map((book: BookItem) => {
           const {
             id,
             imageLinks,

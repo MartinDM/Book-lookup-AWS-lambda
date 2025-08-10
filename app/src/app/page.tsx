@@ -28,11 +28,11 @@ const transformResponseIntoBooks = (data: GoogleBooksResponse): BookItem[] => {
     const { volumeInfo, id, accessInfo } = item;
     return {
       id,
-      infoLink: volumeInfo.infoLink || '',
-      authors: volumeInfo?.authorsList?.join(', ') || [],
-      publishedDate: volumeInfo.publishedDate,
-      imageLinks: volumeInfo.imageLinks,
-      title: volumeInfo.title,
+      infoLink: volumeInfo?.infoLink || '',
+      authors: volumeInfo?.authorsList?.join(', ') || '',
+      publishedDate: volumeInfo?.publishedDate,
+      imageLinks: volumeInfo?.imageLinks,
+      title: volumeInfo?.title,
       webReaderLink: accessInfo?.webReaderLink || '',
     };
   });
@@ -228,11 +228,10 @@ export default function Home() {
               className="load-more"
               size="sm"
               variant="outline"
-              isLoading={isLoading}
               disabled={isLoading}
               mt={2}
             >
-              Load more
+              {isLoading ? 'Loading...' : 'Load more'}
             </Button>
             {books.length > 0 && (
               <Button

@@ -58,11 +58,11 @@ export type GoogleBooksResponseItem = {
 export type BookItem = {
   id: string;
   infoLink: string;
-  authors: string;
+  authors?: string;
   publishedDate?: string;
   imageLinks?: { smallThumbnail: string; thumbnail: string };
   title: string;
-  webReaderLink: string;
+  webReaderLink?: string;
 };
 
 export type GoogleBooksResponse = {

@@ -17,8 +17,12 @@ export default function RootLayout({
       <body>
         <Provider>{children}</Provider>
         <footer>
-          Made with 🩶 by <a href="http://martindm.uk">Martin</a> |{' '}
-          {new Date().getFullYear()}
+          Made with 🩶 by <a href="http://martindm.uk">Martin</a>
+          {' | '}
+          View on{' '}
+          <a href="https://github.com/MartinDM/Book-lookup-AWS-lambda?tab=readme-ov-file#-author-lookup-app">
+            GitHub
+          </a>
         </footer>
       </body>
     </html>
